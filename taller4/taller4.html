@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Libros</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"></script>
+
+</head>
+
+<body>
+
+    <div class="container" id="app">
+        <section class="form">
+            <form class="text-center">
+                <div class="form-group">
+                    <label for="Titulo">Titulo</label>
+                    <input type="text" v-model="titulo" @keyup.entere="añadirLibro" class="form-control" id="titulo" placeholder="Titulo">
+                </div>
+                <div class="form-group">
+                    <label for="Autor">Autor</label>
+                    <input type="text" v-model="autor" @keyup.entere="añadirLibro" class="form-control" id="autor" placeholder="Autor">
+                </div>
+                <div class="form-group">
+                    <label for="Stock">Stock</label>
+                    <input type="text" v-model="stock" @keyup.entere="añadirLibro" class="form-control" id="stock" placeholder="Stock">
+                </div>
+
+                <div class="col-md-3 offset-md-1">
+                    <input type="button" @click="añadirLibro()" value="Guardar" class="btn btn-success">
+                </div>
+                </br>
+            </form>
+        </section>
+
+        <section class="data">
+            <div class="table-responsive">
+                <h3 class="text-center text-light rounded" style="background: #4ba6c2">Libros:</h3>
+                <table class="table table-dark table-hover">
+                    <thead>
+                        <th>ID</th>
+                        <th>Titulo</th>
+                        <th>Autor</th>
+                        <th>Stock</th>
+                        <th>Acciones</th>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(libro, index) in libros">
+                            <td>{{ libro.id }}</td>
+                            <td>
+                                <span v-if="libroUpdate && idUpdater == index">
+
+                                         
+                                            <input v-model="tituloUpdate" type="text" class="form-control">
+                  
+                                 </span>
+                                <span v-else>
+                
+                                    {{ libro.titulo }}
+
+                                </span>
+
+                            </td>
+                            <td>
+
+                                <span v-if="libroUpdate && idUpdater == index">
+    
+                                            
+                                            <input v-model="autorUpdate" type="text" class="form-control">
+                  
+                                    </span>
+                                <span v-else>
+                
+                                         {{ libro.autor }} 
+    
+                                </span>
+
+                            </td>
+                            <td>
+                                <span v-if="libroUpdate && idUpdater == index">
+    
+                                            
+                                            <input v-model="stockUpdate" type="text" class="form-control">
+                  
+                                </span>
+                                <span v-else>
+                
+                                         {{ libro.stock }} 
+    
+                                </span>
+                            </td>
+                            <td>
+                                <span v-if="libroUpdate && idUpdater == index">
+                                            <button @click="editLibro(index)" class="btn btn-outline-success">Guardar</button>
+                                </span>
+                                <span v-else>
+                                        <button @click="verlibroUpdate(index)" class="btn btn-outline-warning">Actualizar</button>
+                                        <button @click="deleteLibro(index)" class="btn btn-outline-danger">Borrar</button>
+                                </span>
+
+
+                            </td>
+                        </tr>
+                    </tbody>
+
+                </table>
+            </div>
+        </section>
+
+
+
+    </div>
+
+</body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        var vm = new Vue({
+            el: '#app',
+            data: {
+                titulo: '',
+                autor: '',
+                stock: '',
+                libroUpdate: false,
+                idUpdater: -1,
+                tituloUpdate: '',
+                autorUpdate: '',
+                stockUpdate: '',
+                libros: []
+
+
+            },
+            methods: {
+                añadirLibro() {
+                    this.libros.push({
+                        id: +new Date(),
+                        titulo: this.titulo,
+                        autor: this.autor,
+                        stock: this.stock
+
+                    });
+                    this.id = '';
+                    this.titulo = '';
+                    this.autor = '';
+                    this.stock = '';
+
+                },
+                deleteLibro: function(libroId) {
+                    this.libros.splice(libroId, 1);
+                },
+                verlibroUpdate(libroId) {
+
+
+                    this.idUpdater = libroId;
+                    this.tituloUpdate = this.libros[libroId].titulo;
+                    this.autorUpdate = this.libros[libroId].autor;
+                    this.stockUpdate = this.libros[libroId].stock;
+
+                    this.libroUpdate = true;
+
+                },
+                editLibro: function(libroId) {
+                    // Volvemos ocultar el formulario de actualizar
+                    this.libroUpdate = false;
+
+                    // Actualizamos los datos
+                    this.libros[libroId].titulo = this.tituloUpdate;
+                    this.libros[libroId].autor = this.autorUpdate;
+                    this.libros[libroId].stock = this.stockUpdate;
+                }
+
+
+            }
+
+
+        })
+    });
+</script>
+
+</html>
